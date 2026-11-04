@@ -10,7 +10,7 @@ export default function AdminSection({ title, description }) {
         <h3>{title} Management</h3>
         <p>
           This is where you will manage {title.toLowerCase()}.
-          Connect this page to your backend API to display real data.
+          
         </p>
       </div>
     </div>

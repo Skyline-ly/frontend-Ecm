@@ -21,11 +21,11 @@ import Settings from "./pages/admin/Settings";
 export default function App() {
   return (
     <Routes>
-      {/* Public authentication pages */}
+    
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* Admin protected routes */}
+
       <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
@@ -42,7 +42,7 @@ export default function App() {
         </Route>
       </Route>
 
-      {/* Unknown routes */}
+   
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
