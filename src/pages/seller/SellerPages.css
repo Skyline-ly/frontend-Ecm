@@ -663,6 +663,14 @@
   padding: 0;
 }
 
+.seller-variant-image-preview {
+  display: block;
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
 .seller-optional {
   color: #94a3b8;
   font-weight: 400;

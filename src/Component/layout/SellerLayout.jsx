@@ -9,6 +9,7 @@ import {
   X,
 } from "lucide-react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import NotificationBell from "../shared/NotificationBell";
 import "./SellerLayout.css";
 
 const navigation = [
@@ -113,6 +114,7 @@ export default function SellerLayout() {
             <p className="seller-topbar-eyebrow">Seller workspace</p>
             <h1>ShopEveryDay Seller</h1>
           </div>
+          <NotificationBell />
           <div className="seller-topbar-user">
             <span className="seller-avatar">
               {sellerName.charAt(0).toUpperCase()}

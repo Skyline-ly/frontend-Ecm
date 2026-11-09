@@ -9,6 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./Reviews.css";
 
 const PAGE_SIZE = 20;
@@ -46,6 +47,8 @@ export default function Reviews() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [loading, setLoading] = useState(true);
   const [busyReviewId, setBusyReviewId] = useState("");
   const [error, setError] = useState("");
@@ -64,6 +67,8 @@ export default function Reviews() {
           page: String(page),
           limit: String(PAGE_SIZE),
         });
+        if (fromDate) params.set("fromDate", fromDate);
+        if (toDate) params.set("toDate", toDate);
         const response = await apiRequest(
           `/api/review/admin/all?${params.toString()}`,
           { signal: controller.signal }
@@ -94,7 +99,13 @@ export default function Reviews() {
 
     loadReviews();
     return () => controller.abort();
-  }, [page, reloadKey]);
+  }, [page, fromDate, toDate, reloadKey]);
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
+  };
 
   const handleDelete = async (review) => {
     const reviewer = review.customer?.name || "this customer";
@@ -156,6 +167,11 @@ export default function Reviews() {
       )}
 
       <div className="dashboard-panel reviews-panel">
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
         <div className="reviews-list-heading">
           <div>
             <h2>Customer reviews</h2>

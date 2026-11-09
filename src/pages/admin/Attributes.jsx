@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./Attributes.css";
 
 const PAGE_SIZE = 20;
@@ -71,6 +72,8 @@ export default function Attributes() {
   const [subcategoriesLoading, setSubcategoriesLoading] = useState(true);
   const [subcategoryFilter, setSubcategoryFilter] = useState("");
   const [activeFilter, setActiveFilter] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
@@ -126,6 +129,8 @@ export default function Attributes() {
         });
         if (subcategoryFilter) params.set("subCategory", subcategoryFilter);
         if (activeFilter) params.set("isActive", activeFilter);
+        if (fromDate) params.set("fromDate", fromDate);
+        if (toDate) params.set("toDate", toDate);
 
         const response = await apiRequest(
           `/api/attribute?${params.toString()}`,
@@ -156,7 +161,13 @@ export default function Attributes() {
 
     loadAttributes();
     return () => controller.abort();
-  }, [page, subcategoryFilter, activeFilter, reloadKey]);
+  }, [page, subcategoryFilter, activeFilter, fromDate, toDate, reloadKey]);
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
+  };
 
   const resetForm = () => {
     setFormOpen(false);
@@ -488,6 +499,11 @@ export default function Attributes() {
       )}
 
       <section className="attributes-list-panel">
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
         <div className="attributes-list-toolbar">
           <div>
             <h2>Attribute list</h2>

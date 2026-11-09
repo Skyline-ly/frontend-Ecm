@@ -12,6 +12,7 @@ import {
   X,
 } from "lucide-react";
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./Categories.css";
 import "./Brands.css";
 
@@ -77,6 +78,8 @@ export default function Brands() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [subcategoryFilter, setSubcategoryFilter] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
@@ -108,6 +111,8 @@ export default function Brands() {
         if (search) params.set("search", search);
         if (categoryFilter) params.set("category", categoryFilter);
         if (subcategoryFilter) params.set("subCategory", subcategoryFilter);
+        if (fromDate) params.set("fromDate", fromDate);
+        if (toDate) params.set("toDate", toDate);
 
         const [brandResponse, allCategories] = await Promise.all([
           apiRequest(`/api/brand/admin/all?${params.toString()}`, {
@@ -142,7 +147,13 @@ export default function Brands() {
 
     loadBrands();
     return () => controller.abort();
-  }, [page, search, categoryFilter, subcategoryFilter, reloadKey]);
+  }, [page, search, categoryFilter, subcategoryFilter, fromDate, toDate, reloadKey]);
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
+  };
 
   useEffect(() => {
     if (!categoryId) {
@@ -542,6 +553,11 @@ export default function Brands() {
       )}
 
       <section className="category-list-panel">
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
         <div className="category-list-toolbar">
           <div>
             <h2>All brands</h2>

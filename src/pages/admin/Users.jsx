@@ -8,6 +8,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./AdminPeople.css";
 
 const PAGE_SIZE = 20;
@@ -39,6 +40,8 @@ export default function Users() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [role, setRole] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
@@ -60,6 +63,8 @@ export default function Users() {
         });
         if (search) params.set("search", search);
         if (role) params.set("role", role);
+        if (fromDate) params.set("fromDate", fromDate);
+        if (toDate) params.set("toDate", toDate);
 
         const response = await apiRequest(
           `/api/user/search?${params.toString()}`,
@@ -90,7 +95,7 @@ export default function Users() {
 
     loadUsers();
     return () => controller.abort();
-  }, [page, search, role, reloadKey]);
+  }, [page, search, role, fromDate, toDate, reloadKey]);
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -101,6 +106,12 @@ export default function Users() {
   const handleRoleChange = (event) => {
     setPage(1);
     setRole(event.target.value);
+  };
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
   };
 
   return (
@@ -154,6 +165,11 @@ export default function Users() {
             </select>
           </label>
         </div>
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
 
         <div className="people-list-heading">
           <div>

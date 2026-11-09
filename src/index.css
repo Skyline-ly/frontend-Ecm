@@ -2,10 +2,31 @@
   box-sizing: border-box;
 }
 
+:root {
+  color-scheme: light;
+  --page-background: #f8f8fc;
+  --surface: #ffffff;
+  --text-main: #202033;
+  --text-muted: #6b7280;
+  --border-light: #dfe1e8;
+  --brand-purple: #6d5ce7;
+  --brand-purple-hover: #5948d1;
+  --sidebar-navy: #17243a;
+  --card-radius: 14px;
+  --button-radius: 10px;
+}
+
+html {
+  min-width: 320px;
+  background: var(--page-background);
+}
+
 body {
   margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background: #f5f7fb;
+  min-height: 100vh;
+  color: var(--text-main);
+  font-family: "DM Sans", Inter, Arial, Helvetica, sans-serif;
+  background: var(--page-background);
 }
 
 button,
@@ -13,4 +34,237 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
+  outline: 3px solid rgb(109 92 231 / 24%);
+  outline-offset: 2px;
+}
+
+html body .admin-layout,
+html body .seller-layout {
+  color: var(--text-main);
+  background: var(--page-background);
+}
+
+html body .admin-sidebar,
+html body .seller-sidebar {
+  background: var(--sidebar-navy);
+}
+
+html body .admin-sidebar .admin-nav-link.active,
+html body .seller-sidebar .seller-nav-link.is-active {
+  background: var(--brand-purple);
+  color: #fff;
+}
+
+html body .admin-sidebar .admin-nav-link:hover,
+html body .seller-sidebar .seller-nav-link:hover {
+  background: #26364f;
+  color: #fff;
+}
+
+html body .admin-sidebar .admin-nav-link.active:hover,
+html body .seller-sidebar .seller-nav-link.is-active:hover {
+  background: var(--brand-purple);
+}
+
+html body .admin-topbar,
+html body .seller-topbar {
+  background: var(--surface);
+}
+
+html body .admin-logo-icon,
+html body .seller-brand-icon {
+  background: var(--brand-purple);
+}
+
+html body .admin-content,
+html body .seller-content {
+  color: var(--text-main);
+}
+
+html body .dashboard-panel,
+html body .stat-card,
+html body .seller-stat-card,
+html body .seller-panel,
+html body .people-panel,
+html body .products-panel,
+html body .reviews-panel,
+html body .attributes-list-panel,
+html body .category-list-panel,
+html body .category-form-panel,
+html body .attributes-form-panel,
+html body .settings-profile-panel,
+html body .settings-scope-panel,
+html body .product-card,
+html body .order-card,
+html body .account-card,
+html body .checkout-card,
+html body .customer-chat-panel,
+html body .customer-conversation-list,
+html body .product-detail-image,
+html body .product-detail-copy {
+  border-radius: var(--card-radius);
+  background-color: var(--surface);
+}
+
+html body .admin-layout input:not([type="checkbox"]):not([type="radio"]),
+html body .admin-layout select,
+html body .admin-layout textarea,
+html body .admin-layout .people-search-field,
+html body .admin-layout .products-search-field,
+html body .admin-layout .category-search,
+html body .seller-layout input:not([type="checkbox"]):not([type="radio"]),
+html body .seller-layout select,
+html body .seller-layout textarea,
+html body .seller-layout .seller-search,
+html body .seller-layout .seller-filter select,
+html body .settings-admin .settings-form input {
+  border-color: var(--border-light);
+}
+
+html body .customer-app {
+  color: var(--text-main);
+  background: var(--page-background);
+}
+
+html body .customer-app input:not([type="checkbox"]):not([type="radio"]),
+html body .customer-app select,
+html body .customer-app textarea {
+  border-color: var(--border-light);
+}
+
+html body .customer-app .product-card,
+html body .customer-app .order-card,
+html body .customer-app .account-card,
+html body .customer-app .checkout-card,
+html body .customer-app .customer-conversation-list,
+html body .customer-app .customer-chat-panel,
+html body .customer-app .product-detail-image,
+html body .customer-app .product-detail-copy {
+  border-radius: var(--card-radius);
+  background: var(--surface);
+}
+
+html body .customer-app .product-card {
+  border-color: var(--border-light);
+}
+
+html body .customer-app .primary-button,
+html body .customer-app .checkout-button,
+html body .customer-app .store-search button,
+html body .customer-app .store-filter-apply,
+html body .customer-app .hero-cta,
+html body .seller-layout .seller-primary-button,
+html body .seller-layout .seller-advance-button,
+html body .admin-layout .products-search > button,
+html body .admin-layout .people-search > button,
+html body .admin-layout .category-primary-button,
+html body .admin-layout .attributes-primary-button,
+html body .admin-layout .settings-save-button,
+html body .auth-page .submit-button {
+  border-color: var(--brand-purple);
+  border-radius: var(--button-radius);
+  background: var(--brand-purple);
+  color: #fff;
+}
+
+html body .customer-app .primary-button:hover:not(:disabled),
+html body .customer-app .checkout-button:hover:not(:disabled),
+html body .customer-app .store-search button:hover,
+html body .customer-app .store-filter-apply:hover,
+html body .customer-app .hero-cta:hover,
+html body .seller-layout .seller-primary-button:hover:not(:disabled),
+html body .seller-layout .seller-advance-button:hover:not(:disabled),
+html body .admin-layout .products-search > button:hover,
+html body .admin-layout .people-search > button:hover,
+html body .admin-layout .category-primary-button:hover:not(:disabled),
+html body .admin-layout .attributes-primary-button:hover:not(:disabled),
+html body .admin-layout .settings-save-button:hover:not(:disabled),
+html body .auth-page .submit-button:hover:not(:disabled) {
+  border-color: var(--brand-purple-hover);
+  background: var(--brand-purple-hover);
+  color: #fff;
+}
+
+html body .auth-page {
+  color: var(--text-main);
+  background: var(--page-background);
+}
+
+html body .auth-page::before,
+html body .auth-page::after {
+  display: none;
+}
+
+html body .admin-layout h1,
+html body .admin-layout h2,
+html body .admin-layout h3,
+html body .admin-layout h4,
+html body .seller-layout h1,
+html body .seller-layout h2,
+html body .seller-layout h3,
+html body .seller-layout h4,
+html body .customer-app h1,
+html body .customer-app h2,
+html body .customer-app h3,
+html body .customer-app h4 {
+  color: var(--text-main);
+}
+
+html body .admin-content p,
+html body .admin-content small,
+html body .admin-topbar p,
+html body .seller-content p,
+html body .seller-content small,
+html body .seller-topbar p,
+html body .customer-app p,
+html body .customer-app small {
+  color: var(--text-muted);
+}
+
+html body .auth-card {
+  border-radius: var(--card-radius);
+}
+
+html body .auth-brand,
+html body .auth-switch a {
+  color: var(--brand-purple);
+}
+
+html body .dashboard-heading h1,
+html body .dashboard-heading h2,
+html body .dashboard-heading h3,
+html body .dashboard-panel h2,
+html body .dashboard-panel h3,
+html body .seller-page-heading h2,
+html body .customer-page-heading h1 {
+  color: var(--text-main);
+}
+
+html body .dashboard-heading p,
+html body .dashboard-panel p,
+html body .seller-page-heading p,
+html body .topbar-left p,
+html body .admin-user-info span {
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

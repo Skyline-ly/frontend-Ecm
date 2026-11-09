@@ -53,11 +53,14 @@ function initialAttributeValues(value, definitions) {
 
 function initialVariantRows(variants = []) {
   return variants.map((variant) => ({
+    variantId: variant._id,
     attributes: plainObject(variant.attributes),
     price: variant.price ?? "",
     discountPrice: variant.discountPrice ?? "",
     stock: variant.stock ?? 0,
     sku: variant.sku || "",
+    imageUrl: variant.image || "",
+    imageFile: null,
   }));
 }
 
@@ -423,11 +426,23 @@ export default function Products() {
     body.append("subCategory", form.subCategory);
     body.append("condition", form.condition);
     body.append("attributes", JSON.stringify(attributeValues));
-    body.append("variants", JSON.stringify(variantRows));
+    const variantFiles = [];
+    const variantsPayload = variantRows.map((row) => {
+      const variant = { ...row };
+      delete variant.imageFile;
+      delete variant.imageUrl;
+      if (row.imageFile) {
+        variant.imageFileIndex = variantFiles.length;
+        variantFiles.push(row.imageFile);
+      }
+      return variant;
+    });
+    body.append("variants", JSON.stringify(variantsPayload));
     if (!variantRows.length && form.discountPrice !== "") {
       body.append("discountPrice", form.discountPrice);
     }
     images.forEach((image) => body.append("images", image));
+    variantFiles.forEach((image) => body.append("variantImages", image));
 
     setSaving(true);
     try {
@@ -807,6 +822,8 @@ export default function Products() {
                               discountPrice: "",
                               stock: "0",
                               sku: "",
+                              imageUrl: "",
+                              imageFile: null,
                             },
                           ])}
                         >
@@ -914,6 +931,35 @@ export default function Products() {
                                       )
                                     )}
                                   />
+                                </label>
+                                <label className="seller-attribute-field">
+                                  Variant image <span className="seller-optional">(optional)</span>
+                                  {variant.imageUrl && (
+                                    <img
+                                      className="seller-variant-image-preview"
+                                      src={variant.imageUrl}
+                                      alt={`Current image for variant ${index + 1}`}
+                                    />
+                                  )}
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(event) => setVariantRows((current) =>
+                                      current.map((row, rowIndex) => rowIndex === index
+                                        ? {
+                                            ...row,
+                                            imageFile: event.target.files?.[0] || null,
+                                          }
+                                        : row
+                                      )
+                                    )}
+                                  />
+                                  <small>
+                                    {variant.imageFile?.name ||
+                                      (variant.imageUrl
+                                        ? "Choose a file to replace the current image."
+                                        : "Choose the image customers should see for this option.")}
+                                  </small>
                                 </label>
                               </div>
                             </fieldset>

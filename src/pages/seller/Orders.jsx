@@ -11,35 +11,10 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./SellerPages.css";
 
 const PAGE_SIZE = 10;
-const statuses = [
-  "",
-  "Pending",
-  "Paid",
-  "Packing",
-  "Out for Delivery",
-  "Success",
-  "In Transit",
-  "Delivered",
-  "Confirmed",
-  "Processing",
-  "Ready for Pickup",
-  "Picked Up",
-  "Completed",
-  "Cancelled",
-];
-const nextStatus = {
-  Pending: "Packing",
-  Packing: "Out for Delivery",
-  "Out for Delivery": "Success",
-  Paid: "Packing",
-  "In Transit": "Delivered",
-  Confirmed: "Processing",
-  Processing: "Ready for Pickup",
-  "Ready for Pickup": "Picked Up",
-};
 
 function formatCurrency(value) {
   const amount = Number(value);
@@ -67,7 +42,11 @@ function statusClass(status = "") {
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
+  const [statuses, setStatuses] = useState([""]);
+  const [statusTransitions, setStatusTransitions] = useState({});
   const [statusFilter, setStatusFilter] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
@@ -91,18 +70,33 @@ export default function Orders() {
           limit: String(PAGE_SIZE),
         });
         if (statusFilter) params.set("status", statusFilter);
-        const response = await apiRequest(
-          `/api/order/seller?${params.toString()}`,
-          { signal: controller.signal }
-        );
+        if (fromDate) params.set("fromDate", fromDate);
+        if (toDate) params.set("toDate", toDate);
+        const [response, statusResponse] = await Promise.all([
+          apiRequest(`/api/order/seller?${params.toString()}`, {
+            signal: controller.signal,
+          }),
+          apiRequest("/api/order/status-options", {
+            signal: controller.signal,
+          }),
+        ]);
         const pageData = response.data;
 
         if (!Array.isArray(pageData?.docs)) {
           throw new Error("The server returned an invalid seller order list.");
         }
+        if (
+          !Array.isArray(statusResponse.data?.statuses) ||
+          !statusResponse.data?.transitions ||
+          typeof statusResponse.data.transitions !== "object"
+        ) {
+          throw new Error("The server returned invalid order status options.");
+        }
 
         if (!controller.signal.aborted) {
           setOrders(pageData.docs);
+          setStatuses(["", ...statusResponse.data.statuses]);
+          setStatusTransitions(statusResponse.data.transitions);
           setTotalDocs(Number(pageData.totalDocs) || 0);
           setTotalPages(Math.max(1, Number(pageData.totalPages) || 1));
         }
@@ -120,7 +114,14 @@ export default function Orders() {
 
     loadOrders();
     return () => controller.abort();
-  }, [page, statusFilter, reloadKey]);
+  }, [page, statusFilter, fromDate, toDate, reloadKey]);
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
+    setExpandedOrderId("");
+  };
 
   const updateOrder = async (order, status) => {
     setError("");
@@ -188,6 +189,11 @@ export default function Orders() {
             </select>
           </label>
         </div>
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
 
         {loading ? (
           <div className="seller-table-state" role="status">
@@ -222,7 +228,7 @@ export default function Orders() {
                     0
                   );
                   const isExpanded = expandedOrderId === id;
-                  const next = nextStatus[order.status];
+                  const next = statusTransitions[order.status];
 
                   return (
                     <Fragment key={id}>

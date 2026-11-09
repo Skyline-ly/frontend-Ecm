@@ -30,6 +30,7 @@ export default function Wishlist() {
     try {
       await apiRequest(`/api/wishlist/${productId}`, { method: "DELETE" });
       setProducts((current) => current.filter((product) => product._id !== productId));
+      window.dispatchEvent(new Event("shopora-wishlist-changed"));
     } catch (requestError) {
       setError(requestError.message || "Unable to remove this product.");
     } finally {

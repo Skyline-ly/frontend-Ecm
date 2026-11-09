@@ -28,6 +28,7 @@ function readUser() {
 export default function CustomerLayout() {
   const [user, setUser] = useState(readUser);
   const [cartCount, setCartCount] = useState(0);
+  const [wishlistCount, setWishlistCount] = useState(0);
   const [categories, setCategories] = useState([]);
   const [navigationError, setNavigationError] = useState("");
   const [search, setSearch] = useState("");
@@ -94,6 +95,34 @@ export default function CustomerLayout() {
     };
   }, [user]);
 
+  useEffect(() => {
+    let active = true;
+    const refreshWishlist = () => {
+      if (!sessionStorage.getItem("accessToken")) {
+        setWishlistCount(0);
+        return;
+      }
+
+      apiRequest("/api/wishlist")
+        .then((response) => {
+          if (!Array.isArray(response.data)) {
+            throw new Error("The server returned an invalid wishlist.");
+          }
+          if (active) setWishlistCount(response.data.length);
+        })
+        .catch(() => {
+          if (active) setWishlistCount(0);
+        });
+    };
+
+    refreshWishlist();
+    window.addEventListener("shopora-wishlist-changed", refreshWishlist);
+    return () => {
+      active = false;
+      window.removeEventListener("shopora-wishlist-changed", refreshWishlist);
+    };
+  }, [user]);
+
   const handleSearch = (event) => {
     event.preventDefault();
     const query = search.trim();
@@ -111,6 +140,7 @@ export default function CustomerLayout() {
     sessionStorage.removeItem("user");
     setUser(null);
     setCartCount(0);
+    setWishlistCount(0);
     window.dispatchEvent(new Event("shopora-auth-changed"));
     navigate("/", { replace: true });
   };
@@ -201,11 +231,24 @@ export default function CustomerLayout() {
               <NavLink
                 key={to}
                 to={to}
-                aria-label={label}
+                aria-label={
+                  label === "Wishlist" && wishlistCount > 0
+                    ? `${label}, ${wishlistCount} items`
+                    : label
+                }
                 className="store-action-link"
                 onClick={() => setMenuOpen(false)}
               >
-                <Icon size={18} strokeWidth={1.8} />
+                {label === "Wishlist" ? (
+                  <span className="store-cart-icon">
+                    <Icon size={18} strokeWidth={1.8} />
+                    {wishlistCount > 0 && (
+                      <span className="store-cart-count">{wishlistCount}</span>
+                    )}
+                  </span>
+                ) : (
+                  <Icon size={18} strokeWidth={1.8} />
+                )}
                 <span>{label}</span>
               </NavLink>
             ))}

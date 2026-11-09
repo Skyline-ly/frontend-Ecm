@@ -83,7 +83,7 @@
 .stat-card {
   background: #fff;
   border: 1px solid #edf0f4;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 22px;
   display: flex;
   align-items: center;
@@ -147,7 +147,7 @@
 .dashboard-panel {
   background: #fff;
   border: 1px solid #edf0f4;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 22px;
   min-width: 0;
 }

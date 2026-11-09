@@ -9,9 +9,7 @@
 .orders-refresh,
 .orders-filter select,
 .orders-pagination button,
-.orders-details-button,
-.orders-advance-button,
-.orders-cancel-button {
+.orders-details-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -35,11 +33,6 @@
 
 .orders-refresh:disabled,
 .orders-pagination button:disabled,
-.orders-actions button:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
 .orders-spinning {
   animation: orders-spin 1s linear infinite;
 }
@@ -62,12 +55,6 @@
   border-color: #fecaca;
   background: #fef2f2;
   color: #b91c1c;
-}
-
-.orders-message.success {
-  border-color: #bbf7d0;
-  background: #f0fdf4;
-  color: #15803d;
 }
 
 .orders-panel {
@@ -204,28 +191,13 @@
 .orders-actions {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
   gap: 6px;
-  min-width: 240px;
 }
 
 .orders-details-button {
   border-color: #dbe1ea;
   background: #fff;
   color: #475569;
-}
-
-.orders-advance-button {
-  border-color: #c7d2fe;
-  background: #eef2ff;
-  color: #4338ca;
-  font-weight: 600;
-}
-
-.orders-cancel-button {
-  border-color: #fecaca;
-  background: #fef2f2;
-  color: #b91c1c;
 }
 
 .orders-details-row td {

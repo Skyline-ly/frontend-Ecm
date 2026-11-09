@@ -298,6 +298,7 @@ export default function Store() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId }),
       });
+      window.dispatchEvent(new Event("shopora-wishlist-changed"));
       setNotice(result.message || "Added to your wishlist.");
     } catch (requestError) {
       setNotice(requestError.message || "Unable to update your wishlist.");

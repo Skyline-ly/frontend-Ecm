@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./Products.css";
 
 const PAGE_SIZE = 20;
@@ -44,6 +45,8 @@ export default function Products() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
@@ -70,6 +73,8 @@ export default function Products() {
         });
         if (search) params.set("search", search);
         if (status) params.set("status", status);
+        if (fromDate) params.set("fromDate", fromDate);
+        if (toDate) params.set("toDate", toDate);
 
         const response = await apiRequest(
           `/api/product/admin/all?${params.toString()}`,
@@ -101,7 +106,7 @@ export default function Products() {
 
     loadProducts();
     return () => controller.abort();
-  }, [page, search, status, reloadKey]);
+  }, [page, search, status, fromDate, toDate, reloadKey]);
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -114,6 +119,12 @@ export default function Products() {
     setPage(1);
     setStatus(event.target.value);
     setNotice("");
+  };
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
   };
 
   const openReview = (product, decision) => {
@@ -220,6 +231,11 @@ export default function Products() {
             </select>
           </label>
         </div>
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
 
         <div className="products-list-heading">
           <div>

@@ -1,7 +1,7 @@
 .seller-layout {
   min-height: 100vh;
-  background: #f5f7fb;
-  color: #17243a;
+  background: #f8f8fc;
+  color: #202033;
 }
 
 .seller-sidebar {
@@ -69,7 +69,7 @@
 }
 
 .seller-nav-link.is-active {
-  background: #4f46e5;
+  background: #6d5ce7;
   color: #fff;
   font-weight: 600;
 }
@@ -95,7 +95,7 @@
   place-items: center;
   border-radius: 50%;
   background: #e0e7ff;
-  color: #4f46e5;
+  color: #6d5ce7;
   font-size: 14px;
   font-weight: 700;
 }

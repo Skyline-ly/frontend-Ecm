@@ -5,17 +5,25 @@ import { apiRequest } from "../../lib/api";
 import { formatDate, formatMoney } from "./customerUtils";
 
 async function fetchOrders() {
-  const result = await apiRequest("/api/order/my?page=1&limit=100");
+  const [result, statusResponse] = await Promise.all([
+    apiRequest("/api/order/my?page=1&limit=100"),
+    apiRequest("/api/order/status-options"),
+  ]);
   if (!Array.isArray(result.data?.docs)) throw new Error("The server returned an invalid order list.");
-  return result.data.docs;
+  if (!Array.isArray(statusResponse.data?.customerProgress)) {
+    throw new Error("The server returned invalid order progress steps.");
+  }
+  return {
+    orders: result.data.docs,
+    progressSteps: statusResponse.data.customerProgress,
+  };
 }
 
 function statusClass(status) {
   return String(status || "unknown").toLowerCase().replace(/\s+/g, "-");
 }
 
-function OrderProgress({ status }) {
-  const steps = ["Pending", "Packing", "Out for Delivery", "Success"];
+function OrderProgress({ status, steps }) {
   if (!steps.includes(status)) return null;
   const currentStep = steps.indexOf(status);
 
@@ -37,6 +45,7 @@ function OrderProgress({ status }) {
 export default function Orders() {
   const location = useLocation();
   const [orders, setOrders] = useState([]);
+  const [progressSteps, setProgressSteps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState(location.state?.notice || "");
@@ -44,9 +53,10 @@ export default function Orders() {
 
   const loadOrders = useCallback(async () => {
     try {
-      const orderList = await fetchOrders();
+      const { orders: orderList, progressSteps: steps } = await fetchOrders();
       setError("");
       setOrders(orderList);
+      setProgressSteps(steps);
     } catch (requestError) {
       setError(requestError.message || "Unable to load your orders.");
     } finally {
@@ -57,7 +67,12 @@ export default function Orders() {
   useEffect(() => {
     let active = true;
     fetchOrders()
-      .then((orderList) => { if (active) setOrders(orderList); })
+      .then(({ orders: orderList, progressSteps: steps }) => {
+        if (active) {
+          setOrders(orderList);
+          setProgressSteps(steps);
+        }
+      })
       .catch((requestError) => { if (active) setError(requestError.message || "Unable to load your orders."); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -107,7 +122,7 @@ export default function Orders() {
                 <div><span className="order-number">ORDER #{String(order._id).slice(-8).toUpperCase()}</span><span className="order-date">Placed {formatDate(order.createdAt)}</span></div>
                 <span className={`order-status status-${statusClass(order.status)}`}>{order.status}</span>
               </div>
-              <OrderProgress status={order.status} />
+              <OrderProgress status={order.status} steps={progressSteps} />
               <div className="order-items">
                 {(order.items || []).map((item) => (
                   <div className="order-item" key={item._id || item.product}>

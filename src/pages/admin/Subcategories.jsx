@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./Categories.css";
 import "./Subcategories.css";
 
@@ -54,6 +55,8 @@ export default function Subcategories() {
   const [search, setSearch] = useState("");
 
   const [categoryFilter, setCategoryFilter] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -101,6 +104,8 @@ export default function Subcategories() {
         if (categoryFilter) {
           listParams.set("category", categoryFilter);
         }
+        if (fromDate) listParams.set("fromDate", fromDate);
+        if (toDate) listParams.set("toDate", toDate);
 
         const [categoryResponse, listResponse] = await Promise.all([
           apiRequest(
@@ -185,7 +190,7 @@ export default function Subcategories() {
     loadSubcategories();
 
     return () => controller.abort();
-  }, [page, search, categoryFilter, reloadKey]);
+  }, [page, search, categoryFilter, fromDate, toDate, reloadKey]);
 
   // Reset the form.
   const resetForm = () => {
@@ -239,6 +244,12 @@ export default function Subcategories() {
   const handleCategoryFilter = (event) => {
     setPage(1);
     setCategoryFilter(event.target.value);
+  };
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
   };
 
   // Create or update a subcategory.
@@ -548,6 +559,11 @@ export default function Subcategories() {
 
       {/* SUBCATEGORY LIST */}
       <section className="category-list-panel">
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
 
         {/* TOOLBAR */}
         <div className="category-list-toolbar">

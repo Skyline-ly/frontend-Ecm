@@ -4,7 +4,7 @@
 
 .admin-layout {
   min-height: 100vh;
-  background: #f5f7fb;
+  background: #f8f8fc;
 }
 
 .admin-sidebar {
@@ -82,7 +82,7 @@
 }
 
 .admin-nav-link.active {
-  background: #4f46e5;
+  background: #6d5ce7;
   color: #fff;
   font-weight: 600;
 }
@@ -179,7 +179,7 @@
   height: 38px;
   border-radius: 50%;
   background: #e0e7ff;
-  color: #4f46e5;
+  color: #6d5ce7;
   display: grid;
   place-items: center;
   font-weight: 700;

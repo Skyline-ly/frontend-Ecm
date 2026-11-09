@@ -2,11 +2,11 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap");
 
 :root {
-  --blue: #3978f6;
-  --blue-dark: #245bd0;
-  --text: #17243b;
-  --muted: #78849a;
-  --border: #e2e9f5;
+  --blue: #6d5ce7;
+  --blue-dark: #5948d1;
+  --text: #202033;
+  --muted: #6b7280;
+  --border: #dfe1e8;
   --white: #ffffff;
 }
 
@@ -20,7 +20,7 @@ body {
   min-height: 100vh;
   font-family: "DM Sans", sans-serif;
   color: var(--text);
-  background: #f5f8ff;
+  background: #f8f8fc;
 }
 
 button,
@@ -125,7 +125,7 @@ input {
   max-width: 470px;
   padding: 44px 42px;
   border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 26px;
+  border-radius: 14px;
   background: rgba(255, 255, 255, 0.78);
   box-shadow:
     0 24px 70px rgba(54, 87, 145, 0.10),
@@ -236,9 +236,9 @@ input {
   margin-top: 28px;
   padding: 14px 20px;
   border: 0;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #4c8aff, #3268eb);
-  box-shadow: 0 8px 20px rgba(57, 120, 246, 0.24);
+  border-radius: 10px;
+  background: #6d5ce7;
+  box-shadow: 0 8px 20px rgba(109, 92, 231, 0.24);
   color: white;
   cursor: pointer;
   font-size: 14px;
@@ -251,7 +251,8 @@ input {
 
 .submit-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(57, 120, 246, 0.30);
+  background: #5948d1;
+  box-shadow: 0 12px 26px rgba(109, 92, 231, 0.30);
   filter: saturate(1.1);
 }
 

@@ -1,14 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
 
 .customer-app {
-  --shop-ink: #223b35;
-  --shop-muted: #788781;
-  --shop-border: #e7e9e3;
-  --shop-green: #315d4d;
-  --shop-soft-green: #edf3ee;
+  --shop-ink: #202033;
+  --shop-muted: #6b7280;
+  --shop-border: #dfe1e8;
+  --shop-green: #6d5ce7;
+  --shop-soft-green: #f0efff;
   min-height: 100vh;
   color: var(--shop-ink);
-  background: #fff;
+  background: #f8f8fc;
   font-family: "DM Sans", sans-serif;
 }
 

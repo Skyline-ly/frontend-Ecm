@@ -52,7 +52,14 @@ export default function ProductDetails() {
   const hasVariants = Boolean(product?.variants?.length);
   const stock = hasVariants ? selectedVariant?.stock : product?.stock;
   const currentPrice = productPrice(product, selectedVariant);
-  const images = product?.images || [];
+  const images = useMemo(() => {
+    const productImages = product?.images || [];
+    if (!selectedVariant?.image) return productImages;
+    return [
+      { url: selectedVariant.image },
+      ...productImages.filter((image) => image.url !== selectedVariant.image),
+    ];
+  }, [product, selectedVariant]);
 
   const addToCart = async () => {
     if (!sessionStorage.getItem("accessToken")) {
@@ -101,6 +108,7 @@ export default function ProductDetails() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId: product._id }),
       });
+      window.dispatchEvent(new Event("shopora-wishlist-changed"));
       setNotice(result.message || "Added to your wishlist.");
     } catch (requestError) {
       setNotice(requestError.message || "Unable to update your wishlist.");
@@ -235,7 +243,12 @@ export default function ProductDetails() {
                       key={variant._id}
                       disabled={Number(variant.stock) < 1}
                       className={variantId === variant._id ? "is-selected" : ""}
-                      onClick={() => { setVariantId(variant._id); setQuantity(1); setNotice(""); }}
+                      onClick={() => {
+                        setVariantId(variant._id);
+                        setSelectedImage(0);
+                        setQuantity(1);
+                        setNotice("");
+                      }}
                     >
                       {label}{Number(variant.stock) < 1 ? " · Sold out" : ""}
                     </button>

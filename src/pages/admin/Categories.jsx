@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./Categories.css";
 
 const PAGE_SIZE = 10;
@@ -19,6 +20,8 @@ export default function Categories() {
   const [categories, setCategories] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
@@ -46,6 +49,8 @@ export default function Categories() {
           limit: String(PAGE_SIZE),
         });
         if (search) params.set("search", search);
+        if (fromDate) params.set("fromDate", fromDate);
+        if (toDate) params.set("toDate", toDate);
 
         const response = await apiRequest(
           `/api/categories?${params.toString()}`,
@@ -78,7 +83,7 @@ if (!controller.signal.aborted) {
 
     loadCategories();
     return () => controller.abort();
-  }, [page, search, reloadKey]);
+  }, [page, search, fromDate, toDate, reloadKey]);
 
   const resetForm = () => {
     setFormOpen(false);
@@ -109,6 +114,12 @@ if (!controller.signal.aborted) {
     event.preventDefault();
     setPage(1);
     setSearch(searchInput.trim());
+  };
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
   };
 
   const handleSubmit = async (event) => {
@@ -288,6 +299,11 @@ if (!controller.signal.aborted) {
       )}
 
       <section className="category-list-panel">
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
         <div className="category-list-toolbar">
           <div>
             <h2>All categories</h2>

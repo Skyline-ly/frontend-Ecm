@@ -1,5 +1,6 @@
-import { Menu, Bell, Search } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import NotificationBell from "../shared/NotificationBell";
 
 const pageNames = {
   "/admin": "Dashboard",
@@ -44,9 +45,7 @@ export default function AdminTopbar({ onMenuClick }) {
           <Search size={20} />
         </button>
 
-        <button className="topbar-icon" aria-label="Notifications">
-          <Bell size={20} />
-        </button>
+        <NotificationBell />
 
         <div className="admin-user">
           <div className="admin-avatar">

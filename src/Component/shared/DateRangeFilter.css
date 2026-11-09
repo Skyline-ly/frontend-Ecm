@@ -1,0 +1,47 @@
+.date-range-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color, #e5e7eb);
+}
+
+.date-range-filter label {
+  display: grid;
+  gap: 0.3rem;
+  color: var(--text-secondary, #64748b);
+  font-size: 0.78rem;
+}
+
+.date-range-filter input {
+  min-height: 2.35rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--border-color, #cbd5e1);
+  border-radius: 0.4rem;
+  color: inherit;
+  font: inherit;
+}
+
+.date-range-filter button {
+  min-height: 2.35rem;
+  padding: 0.35rem 0.75rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: var(--primary-color, #2563eb);
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.date-range-filter .date-range-clear {
+  border: 1px solid var(--border-color, #cbd5e1);
+  background: transparent;
+  color: inherit;
+}
+
+.date-range-error {
+  flex-basis: 100%;
+  color: #b91c1c;
+  font-size: 0.8rem;
+}

@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { apiRequest } from "../../lib/api";
+import DateRangeFilter from "../../Component/shared/DateRangeFilter";
 import "./AdminPeople.css";
 
 const PAGE_SIZE = 20;
@@ -56,6 +57,8 @@ export default function Sellers() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [view, setView] = useState("pending");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalDocs, setTotalDocs] = useState(0);
@@ -79,6 +82,8 @@ export default function Sellers() {
           ...queryForView(view),
         });
         if (search) params.set("search", search);
+        if (fromDate) params.set("fromDate", fromDate);
+        if (toDate) params.set("toDate", toDate);
 
         const response = await apiRequest(
           `/api/user/search?${params.toString()}`,
@@ -109,7 +114,7 @@ export default function Sellers() {
 
     loadSellers();
     return () => controller.abort();
-  }, [page, search, view, reloadKey]);
+  }, [page, search, view, fromDate, toDate, reloadKey]);
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -122,6 +127,12 @@ export default function Sellers() {
     setPage(1);
     setView(event.target.value);
     setNotice("");
+  };
+
+  const handleDateFilter = (startDate, endDate) => {
+    setPage(1);
+    setFromDate(startDate);
+    setToDate(endDate);
   };
 
   const updateSellerStatus = async (seller, action, confirmMessage) => {
@@ -227,6 +238,11 @@ export default function Sellers() {
             </select>
           </label>
         </div>
+        <DateRangeFilter
+          fromDate={fromDate}
+          toDate={toDate}
+          onApply={handleDateFilter}
+        />
 
         <div className="people-list-heading">
           <div>
