@@ -1,6 +1,6 @@
 
 export const API_URL = (
-  import.meta.env.VITE_API_URL || "https://ecmapi.onrender.com"
+  import.meta.env.VITE_API_URL
 ).replace(/\/+$/, "");
 
 let refreshRequest = null;
