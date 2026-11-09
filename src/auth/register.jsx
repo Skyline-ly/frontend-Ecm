@@ -108,7 +108,7 @@ export default function Register() {
 
       <section className="auth-card register-card">
         <a href="/" className="auth-brand">
-          Shopora
+          ShopEveryDay
         </a>
 
         <h1 className="auth-title">Register</h1>

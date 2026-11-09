@@ -101,7 +101,7 @@ export default function Login() {
 
       <section className="auth-card login-card">
         <a href="/" className="auth-brand">
-          Shopora
+          ShopEveryDay
         </a>
        
         <h1 className="auth-title">login</h1>

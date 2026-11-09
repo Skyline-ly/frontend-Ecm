@@ -51,17 +51,21 @@ export default function Categories() {
           `/api/categories?${params.toString()}`,
           { signal: controller.signal }
         );
-        const result = response.data;
+    
 
-        if (!Array.isArray(result?.docs)) {
-          throw new Error("The server returned an invalid category list.");
-        }
+const result = response.data;
 
-        if (!controller.signal.aborted) {
-          setCategories(result.docs);
-          setTotalDocs(Number(result.totalDocs) || 0);
-          setTotalPages(Math.max(1, Number(result.totalPages) || 1));
-        }
+if (!Array.isArray(result)) {
+  throw new Error("The server returned an invalid category list.");
+}
+
+if (!controller.signal.aborted) {
+  setCategories(result);
+  setTotalDocs(Number(response.pagination?.totalDocs) || 0);
+  setTotalPages(
+    Math.max(1, Number(response.pagination?.totalPages) || 1)
+  );
+}
       } catch (requestError) {
         if (!controller.signal.aborted) {
           setError(requestError.message || "Unable to load categories.");

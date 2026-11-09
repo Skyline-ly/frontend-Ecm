@@ -50,7 +50,7 @@ export default function AdminSidebar({ open, onClose }) {
           <div className="admin-logo-icon">
             <ShoppingBag size={23} />
           </div>
-          <span>ShopEveryday</span>
+          <span>ShopEveryDay</span>
           <button
             className="sidebar-close"
             type="button"

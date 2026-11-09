@@ -15,7 +15,7 @@ import { apiRequest } from "../../lib/api";
 import "./Categories.css";
 import "./Brands.css";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 
 
 async function fetchAllCategories(signal) {
@@ -115,12 +115,15 @@ export default function Brands() {
           }),
           fetchAllCategories(controller.signal),
         ]);
-        if (!Array.isArray(brandResponse.data)) {
+        // getAdminBrands returns: { data: [...brands], pagination: {...} }
+        const brandData = brandResponse.data;
+
+        if (!Array.isArray(brandData)) {
           throw new Error("The server returned an invalid brand list.");
         }
 
         if (!controller.signal.aborted) {
-          setBrands(brandResponse.data);
+          setBrands(brandData);
           setCategories(allCategories);
           setTotalDocs(Number(brandResponse.pagination?.totalDocs) || 0);
           setTotalPages(
@@ -143,6 +146,7 @@ export default function Brands() {
 
   useEffect(() => {
     if (!categoryId) {
+      setSubcategories([]);
       return undefined;
     }
 
@@ -191,7 +195,10 @@ export default function Brands() {
   }, [categoryId]);
 
   useEffect(() => {
-    if (!categoryFilter) return undefined;
+    if (!categoryFilter) {
+      setFilterSubcategories([]);
+      return undefined;
+    }
 
     const controller = new AbortController();
     async function loadFilterSubcategories() {

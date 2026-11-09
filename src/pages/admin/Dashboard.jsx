@@ -57,7 +57,7 @@ export default function Dashboard() {
           ),
           apiRequest("/api/product/admin/pending?page=1&limit=1", options),
           apiRequest(
-            "/api/order/admin/all?status=Completed&page=1&limit=1",
+            "/api/order/admin/all?status=Success&page=1&limit=1",
             options
           ),
         ]);
@@ -268,7 +268,7 @@ export default function Dashboard() {
                 </div>
                 <div>
                   <strong>{dashboard.completedOrders.toLocaleString()}</strong>
-                  <p>Completed orders</p>
+                  <p>Successful orders</p>
                 </div>
               </div>
 
