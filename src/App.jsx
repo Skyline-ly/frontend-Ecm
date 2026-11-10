@@ -39,7 +39,6 @@ export default function App() {
       <Route element={<CustomerLayout />}>
         <Route index element={<Store />} />
         <Route path="product/:id" element={<ProductDetails />} />
-        <Route path="payway-checkout" element={<PayWayCheckout />} />
       </Route>
 
       <Route path="/login" element={<Login />} />
@@ -49,6 +48,7 @@ export default function App() {
         <Route element={<CustomerLayout />}>
           <Route path="/account" element={<Account />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/payway-checkout" element={<PayWayCheckout />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/orders" element={<CustomerOrders />} />
           <Route path="/messages" element={<Messages />} />

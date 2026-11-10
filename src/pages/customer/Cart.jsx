@@ -104,6 +104,9 @@ export default function Cart() {
 
   const checkout = async (event) => {
     event.preventDefault();
+    const paymentMethod = event.nativeEvent.submitter?.value === "PayWay"
+      ? "PayWay"
+      : "COD";
     if (!address.trim() || !phone.trim()) {
       setNotice("Enter your delivery address and phone number to place your order.");
       return;
@@ -115,6 +118,7 @@ export default function Cart() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          paymentMethod,
           deliveryInfo: {
             address: address.trim(),
             phone: phone.trim(),
@@ -123,6 +127,10 @@ export default function Cart() {
         }),
       });
       window.dispatchEvent(new Event("shopora-cart-changed"));
+      if (paymentMethod === "PayWay") {
+        navigate(`/payway-checkout?orderId=${encodeURIComponent(result.data._id)}`);
+        return;
+      }
       navigate("/orders", { state: { notice: result.message || "Your order has been placed." } });
     } catch (requestError) {
       setNotice(requestError.message || "Unable to place your order.");
@@ -186,7 +194,7 @@ export default function Cart() {
           <aside className="checkout-card">
             <div className="checkout-card-heading"><h2>Order summary</h2><span>{items.length} {items.length === 1 ? "item" : "items"}</span></div>
             <div className="checkout-line"><span>Subtotal</span><strong>{formatMoney(subtotal)}</strong></div>
-            <div className="checkout-line"><span>Payment</span><span>Cash on delivery</span></div>
+            <div className="checkout-line"><span>Payment options</span><span>Cash on delivery or ABA PayWay</span></div>
             <div className="checkout-total"><span>Total</span><strong>{formatMoney(subtotal)}</strong></div>
             <form onSubmit={checkout} className="checkout-form">
               <label htmlFor="delivery-address"><MapPin size={16} /> Delivery address <span>Required</span></label>
@@ -195,15 +203,16 @@ export default function Cart() {
               <input id="delivery-phone" type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="Phone number for delivery" maxLength={30} required />
               <label htmlFor="delivery-note">Note <span>Optional</span></label>
               <textarea id="delivery-note" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Anything the seller should know?" maxLength={500} rows={2} />
-              <button className="primary-button checkout-button" type="submit" disabled={checkingOut || !items.length}>
-                {checkingOut ? "Placing order..." : "Place order"} <ArrowRight size={16} />
-              </button>
+              <div className="checkout-actions">
+                <button className="primary-button checkout-button" type="submit" value="COD" disabled={checkingOut || !items.length}>
+                  {checkingOut ? "Placing order..." : "Cash on delivery"} <ArrowRight size={16} />
+                </button>
+                <button className="primary-button checkout-button payway-order-button" type="submit" value="PayWay" disabled={checkingOut || !items.length}>
+                  {checkingOut ? "Creating order..." : "Pay online with PayWay"} <ArrowRight size={16} />
+                </button>
+              </div>
             </form>
-            <p className="checkout-footnote">Pay the seller when your order arrives. No online payment is required.</p>
-            <Link className="payway-sandbox-link" to="/payway-checkout">
-              Try PayWay sandbox ($1.00 test)
-            </Link>
-            <p className="checkout-footnote">Sandbox test only; this does not pay for your cart order.</p>
+            <p className="checkout-footnote">PayWay charges the order total shown above. Your order is not sent to sellers until payment is confirmed.</p>
           </aside>
         </div>
       )}

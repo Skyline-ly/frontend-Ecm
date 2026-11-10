@@ -2015,15 +2015,23 @@
   text-align: center;
 }
 
-.payway-sandbox-link {
-  display: block;
-  margin-top: 14px;
-  color: #315d4d;
-  font-size: 11px;
-  font-weight: 700;
-  text-align: center;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.checkout-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.checkout-actions .checkout-button {
+  margin-top: 4px;
+}
+
+.checkout-actions .payway-order-button {
+  border: 1px solid #6d5ce7;
+  background: #fff;
+  color: #5948d1;
+}
+
+.checkout-actions .payway-order-button:hover:not(:disabled) {
+  background: #f0efff;
 }
 
 .order-list {

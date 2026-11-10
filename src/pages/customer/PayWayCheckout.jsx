@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, LoaderCircle, QrCode } from "lucide-react";
-import { Link } from "react-router-dom";
-import { API_URL } from "../../lib/api";
+import { Link, useSearchParams } from "react-router-dom";
+import { apiRequest } from "../../lib/api";
+import { formatMoney } from "./customerUtils";
 import "./PayWayCheckout.css";
 
 const POLL_INTERVAL_MS = 3000;
@@ -36,21 +37,16 @@ function getDeepLink(value) {
   }
 }
 
-async function readJsonResponse(response) {
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw new Error(data.message || `Request failed (${response.status}).`);
-  }
-  return data;
-}
-
 export default function PayWayCheckout() {
+  const [searchParams] = useSearchParams();
+  const orderId = searchParams.get("orderId");
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
   const [payment, setPayment] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState("");
   const [statusError, setStatusError] = useState("");
   const [transactionId, setTransactionId] = useState("");
+  const [paymentAmount, setPaymentAmount] = useState(null);
 
   const createPayment = async () => {
     setCreating(true);
@@ -60,9 +56,16 @@ export default function PayWayCheckout() {
     setStatusError("");
     setTransactionId("");
 
+    if (!orderId) {
+      setError("Order ID is missing. Return to your cart and choose Pay online with PayWay.");
+      setCreating(false);
+      return;
+    }
+
     try {
-      const response = await fetch(`${API_URL}/create-payment`, { method: "POST" });
-      const data = await readJsonResponse(response);
+      const data = await apiRequest(`/api/payment/orders/${encodeURIComponent(orderId)}/payway`, {
+        method: "POST",
+      });
 
       if (data.status?.code !== "00") {
         throw new Error(data.status?.message || "PayWay could not create the payment.");
@@ -73,6 +76,7 @@ export default function PayWayCheckout() {
 
       setPayment(data);
       setTransactionId(data.tran_id);
+      setPaymentAmount(data.amount);
       setPaymentStatus("Waiting for payment...");
     } catch (requestError) {
       setError(requestError.message || "Unable to create the payment.");
@@ -98,12 +102,11 @@ export default function PayWayCheckout() {
       timeoutId = window.setTimeout(async () => {
         attempts += 1;
         try {
-          const response = await fetch(`${API_URL}/check-payment-status`, {
+          const data = await apiRequest("/api/payment/check-status", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tran_id: transactionId }),
           });
-          const data = await readJsonResponse(response);
 
           if (data.status?.code !== "00") {
             throw new Error(data.status?.message || "Unable to check payment status.");
@@ -111,7 +114,7 @@ export default function PayWayCheckout() {
 
           const status = data.data?.payment_status;
           if (status && String(status).toUpperCase() !== "PENDING") {
-            if (active) setPaymentStatus(`Payment status: ${status}`);
+            if (active) setPaymentStatus(`Payment status: ${data.paymentRecordStatus || status}`);
             return;
           }
 
@@ -139,8 +142,8 @@ export default function PayWayCheckout() {
       <div className="customer-page-heading">
         <div>
           <span className="eyebrow">PAYWAY SANDBOX</span>
-          <h1>Test checkout</h1>
-          <p>Generate a $1.00 test payment and scan it with ABA Mobile.</p>
+          <h1>Pay for your order</h1>
+          <p>Your payment amount is calculated from your saved order total.</p>
         </div>
         <Link className="text-link" to="/cart">
           <ArrowLeft size={15} /> Back to cart
@@ -150,17 +153,24 @@ export default function PayWayCheckout() {
       <div className="payway-card">
         <div className="payway-card-icon"><QrCode size={22} /></div>
         <div>
-          <h2>ABA PayWay test payment</h2>
-          <p>This sandbox payment is separate from any order in your cart.</p>
+          <h2>ABA PayWay checkout</h2>
+          <p>{paymentAmount ? `Order total: ${formatMoney(paymentAmount)}` : "Your order total will be shown with the payment details."}</p>
         </div>
-        <button
-          className="primary-button payway-create-button"
-          type="button"
-          onClick={createPayment}
-          disabled={creating}
-        >
-          {creating ? <><LoaderCircle className="spin" size={17} /> Creating payment...</> : "Pay Now ($1.00 test)"}
-        </button>
+        {!orderId && (
+          <p className="payway-error" role="alert">
+            Order ID is missing. Return to your cart and choose Pay online with PayWay.
+          </p>
+        )}
+        {!payment && (
+          <button
+            className="primary-button payway-create-button"
+            type="button"
+            onClick={createPayment}
+            disabled={creating || !orderId}
+          >
+            {creating ? <><LoaderCircle className="spin" size={17} /> Creating payment...</> : "Create PayWay payment"}
+          </button>
+        )}
 
         {error && <p className="payway-error" role="alert">{error}</p>}
 
