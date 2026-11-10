@@ -2015,6 +2015,17 @@
   text-align: center;
 }
 
+.payway-sandbox-link {
+  display: block;
+  margin-top: 14px;
+  color: #315d4d;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .order-list {
   display: grid;
   gap: 15px;

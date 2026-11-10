@@ -200,6 +200,10 @@ export default function Cart() {
               </button>
             </form>
             <p className="checkout-footnote">Pay the seller when your order arrives. No online payment is required.</p>
+            <Link className="payway-sandbox-link" to="/payway-checkout">
+              Try PayWay sandbox ($1.00 test)
+            </Link>
+            <p className="checkout-footnote">Sandbox test only; this does not pay for your cart order.</p>
           </aside>
         </div>
       )}

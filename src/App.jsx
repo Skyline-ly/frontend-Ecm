@@ -31,6 +31,7 @@ import Account from "./pages/customer/Account";
 import Invoice from "./pages/customer/Invoice";
 import Messages from "./pages/customer/Messages";
 import BecomeSeller from "./pages/customer/BecomeSeller";
+import PayWayCheckout from "./pages/customer/PayWayCheckout";
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
       <Route element={<CustomerLayout />}>
         <Route index element={<Store />} />
         <Route path="product/:id" element={<ProductDetails />} />
+        <Route path="payway-checkout" element={<PayWayCheckout />} />
       </Route>
 
       <Route path="/login" element={<Login />} />
